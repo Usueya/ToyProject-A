@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.my.ReactionMapper">
+	
+	<insert id="insert" parameterType="Reaction" >
+		INSERT INTO REACTION (CLSNUM,USERID,STATE)
+		VALUES (#{clsnum}, #{userid}, #{state})
+	</insert>
+	
+	<select id="selectOne" parameterType="Reaction" resultType="Reaction">
+		SELECT * FROM REACTION
+		WHERE CLSNUM = #{clsnum}
+		AND USERID = #{userid}
+	</select>
+	
+	<!-- 좋아요/싫어요 선택시 -->
+	<update id="update">
+		UPDATE REACTION
+		SET STATE = #{state}
+		WHERE CLSNUM = #{clsnum}
+		AND USERID = #{userid}
+	</update>
+
+</mapper>

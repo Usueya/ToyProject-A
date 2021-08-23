@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		
+	<!-- MySQL DB접속 정보  -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/testdb?characterEncoding=UTF-8"/>
+		<property name="username" value="test"/>
+		<property name="password" value="1111"/>
+	</bean>
+	
+	<!-- mybatis factory객체 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/> 
+		<property name="configLocation" value="classpath:/mybatisConfig.xml"/>
+		<property name="mapperLocations" value="classpath:/mappers/**/*Mapper.xml"/>
+	</bean>
+	
+	<!-- factory session생성 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- 파일업로드시 경로 bean생성(Spring방식) -->
+	<!-- JAVA방식) String uploadDir = new String("E:/academy/08_Spring/upload"); -->
+	<bean id="uploadDir" class="java.lang.String">
+		<constructor-arg value="E:/academy/08_Spring/yclass_upload"/>
+		<!-- <constructor-arg value="/var/lib/tomcat9/webapps/upload"/> -->
+	</bean>
+	
+	<!-- 암호화 bean생성 -->
+	<bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+	</bean>
+	
+	<!-- 트랜젝션을 myBatis > Spring으로 권한을 넘김 -->
+	<!-- 트랜젝션 어노테이션 자동 스캔  -->
+	<tx:annotation-driven/>
+	
+	<!-- 트랜젝션 매니저 객체(bean) 생성, 관리할 데이터 소스 속성 작성 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 인증 이메일 bean생성 -->
+	<!-- https://www.google.com/settings/security/lesssecureapps에서 보안 낮은 앱 액세스 허용 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<!-- getter기능 -->
+		<!-- 메일을 보낼 수 있도록 각 메일 사이트에서 smtp 포트번호를 알려줌 -->
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<!-- 메일을 발송하는 사람 인증(메일과 패스워드) -->
+		<property name="username" value="sujeongy91@gmail.com"/>
+		<property name="password" value="clear803@@@"/>
+		<!--  -->
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+		
+	</bean>
+	
+</beans>

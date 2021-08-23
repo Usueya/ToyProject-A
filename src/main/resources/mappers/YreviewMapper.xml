@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.my.YreviewMapper">
+	
+	<insert id="insert">
+		INSERT INTO YREVIEW (USERID, SALENUM, CONTENT)
+		VALUES (#{userid}, #{salenum}, #{content})
+	</insert>
+	
+	<delete id="delete">
+		DELETE FROM YREVIEW
+		WHERE RNUM = #{rnum}
+	</delete>
+	
+	<select id="selectOne" resultType="Yreview">
+		SELECT * FROM YREVIEW
+		WHERE USERID = #{userid}
+		AND SALENUM = #{salenum}
+	</select>
+	
+	<select id="selectList" resultType="java.util.Map">
+		SELECT R.USERID, R.CONTENT, S.CLSNUM
+		FROM YREVIEW R JOIN YSALES S ON (R.SALENUM = S.SALENUM)
+		WHERE S.CLSNUM = #{clsnum}
+	</select>
+
+</mapper>
